@@ -1,0 +1,23 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "./index.js",
+            "use": "@now/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/",
+            "methods": [
+                "get",
+                "post",
+                "patch",
+                "put",
+                "delete",
+                "options"
+            ]
+        }
+    ]
+}
