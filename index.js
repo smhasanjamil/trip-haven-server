@@ -84,13 +84,14 @@ async function run() {
         });
 
         // Delete Item
-        app.delete("/carts/:id", async (req, res) => {
+        app.delete("/delete-carts/:id", async (req, res) => {
             const id = req.params.id;
-            const query = {
-                _id: new ObjectId(id)
-            };
-            const result = await userCollection.deleteOne(query);
-            res.send(result);
+            console.log(id);
+            // const query = {
+            //     _id: new ObjectId(id)
+            // };
+            // const result = await cartCollection.deleteOne(query);
+            // res.send(result);
         });
 
 
