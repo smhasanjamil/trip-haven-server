@@ -17,6 +17,9 @@ app.use(cors());
 app.use(express.json());
 
 
+// Replace with own stripe secret key 
+const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
+
 // Connect to MongoDB
 // const uri = process.env.MONGODB_URI;
 // const uri = "mongodb+srv://<username>:<password>@cluster0.g5cwrlz.mongodb.net/?retryWrites=true&w=majority";
@@ -39,6 +42,7 @@ async function run() {
 
         const tripCollection = client.db("trip-haven").collection("trip");
         const cartCollection = client.db("trip-haven").collection("carts");
+        const paymentCollection = client.db("trip-haven").collection("payments");
 
         // Write Here GET, PUT, UPDATE, DELETE code
         app.get("/trip", async (req, res) => {
@@ -93,6 +97,50 @@ async function run() {
             const result = await cartCollection.deleteOne(query);
             res.send(result);
         });
+
+
+
+
+
+
+
+        // Stripe Payment
+        app.post("/create-payment-intent", async (req, res) => {
+            const { price } = req.body;
+            const amount = Math.floor(price);
+
+            // console.log(price, amount);
+
+            // Create a PaymentIntent with the order amount and currency
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amount,
+                currency: "usd",
+                payment_method_types: ["card"]
+            });
+
+            res.send({
+                clientSecret: paymentIntent.client_secret,
+            });
+        });
+
+
+        // Payment related API
+        app.post('/payments', async (req, res) => {
+            const payment = req.body;
+            const Insertedresult = await paymentCollection.insertOne(payment);
+
+            const query = { _id: { $in: payment.cartItems.map(id => new ObjectId(id)) } };
+
+            const deleteResult = await cartCollection.deleteMany(query);
+
+            res.send({ Insertedresult, deleteResult });
+        });
+
+
+
+
+
+
 
 
 
