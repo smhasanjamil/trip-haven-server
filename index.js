@@ -13,16 +13,21 @@ const app = express();
 // Use CORS middleware
 app.use(cors());
 
+
+app.use(cors({
+    origin: 'https://trip-haven.web.app', // Replace with the actual origin of your frontend
+    methods: 'GET,POST', // Specify the allowed HTTP methods
+    optionsSuccessStatus: 204, // Set the preflight request status code
+  }));
+  
+
+
 // Parse JSON request bodies
 app.use(express.json());
-
 
 // Replace with own stripe secret key 
 const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 
-// Connect to MongoDB
-// const uri = process.env.MONGODB_URI;
-// const uri = "mongodb+srv://<username>:<password>@cluster0.g5cwrlz.mongodb.net/?retryWrites=true&w=majority";
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.g5cwrlz.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -99,11 +104,6 @@ async function run() {
         });
 
 
-
-
-
-
-
         // Stripe Payment
         app.post("/create-payment-intent", async (req, res) => {
             const { price } = req.body;
@@ -138,12 +138,6 @@ async function run() {
 
 
 
-
-
-
-
-
-
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("You successfully connected to MongoDB!");
@@ -153,8 +147,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
-
 
 // Define a test route
 app.get('/', (req, res) => {
