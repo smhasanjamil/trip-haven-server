@@ -15,11 +15,9 @@ app.use(cors());
 
 
 app.use(cors({
-    origin: 'https://trip-haven.web.app', // Replace with the actual origin of your frontend
-    methods: 'GET,POST', // Specify the allowed HTTP methods
-    optionsSuccessStatus: 204, // Set the preflight request status code
-  }));
-  
+    origin: '*',
+}));
+
 
 
 // Parse JSON request bodies
@@ -27,6 +25,7 @@ app.use(express.json());
 
 // Replace with own stripe secret key 
 const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
+// console.log(stripe);
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.g5cwrlz.mongodb.net/?retryWrites=true&w=majority`;
 
